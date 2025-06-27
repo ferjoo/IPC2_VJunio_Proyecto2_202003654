@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<configuraciones>
+    <cursos>
+        <curso codigo="770">Introducción a la Programación</curso>
+        <curso codigo="771">Estructuras de Datos</curso>
+        <curso codigo="772">Algoritmos y Complejidad</curso>
+        <curso codigo="773">Bases de Datos</curso>
+        <curso codigo="774">Sistemas Operativos</curso>
+    </cursos>
+    <tutores>
+        <tutor registro_personal="1111" contrasenia="1234">Juan Pérez</tutor>
+        <tutor registro_personal="2222" contrasenia="1234">María García</tutor>
+        <tutor registro_personal="3333" contrasenia="1234">Carlos López</tutor>
+        <tutor registro_personal="4444" contrasenia="1234">Ana Martínez</tutor>
+    </tutores>
+    <estudiantes>
+        <estudiante carnet="1234" contrasenia="1234">Pedro Rodríguez</estudiante>
+        <estudiante carnet="5678" contrasenia="1234">Laura Sánchez</estudiante>
+        <estudiante carnet="1122" contrasenia="1234">Roberto Torres</estudiante>
+        <estudiante carnet="3344" contrasenia="1234">Carmen Vega</estudiante>
+        <estudiante carnet="5566" contrasenia="1234">Diego Morales</estudiante>
+        <estudiante carnet="7788" contrasenia="1234">Sofia Herrera</estudiante>
+    </estudiantes>
+    <asignaciones>
+        <c_tutores>
+            <tutor_curso codigo="770">1111</tutor_curso>
+            <tutor_curso codigo="771">2222</tutor_curso>
+            <tutor_curso codigo="772">3333</tutor_curso>
+            <tutor_curso codigo="773">4444</tutor_curso>
+            <tutor_curso codigo="774">1111</tutor_curso>
+        </c_tutores>
+        <c_estudiante>
+            <estudiante_curso codigo="770">1234</estudiante_curso>
+            <estudiante_curso codigo="770">5678</estudiante_curso>
+            <estudiante_curso codigo="771">1122</estudiante_curso>
+            <estudiante_curso codigo="771">3344</estudiante_curso>
+            <estudiante_curso codigo="772">5566</estudiante_curso>
+            <estudiante_curso codigo="773">7788</estudiante_curso>
+            <estudiante_curso codigo="774">1234</estudiante_curso>
+        </c_estudiante>
+    </asignaciones>
+</configuraciones> 
