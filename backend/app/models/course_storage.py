@@ -116,6 +116,13 @@ class CourseStorage:
             if course_data and course_data.get('codigo') == codigo:
                 return course_data
         
+        # If hash lookup failed, do a linear search through all courses
+        # This handles hash collisions
+        all_courses = self.get_all_courses()
+        for course in all_courses:
+            if course.get('codigo') == codigo:
+                return course
+        
         return None
     
     def get_all_courses(self):

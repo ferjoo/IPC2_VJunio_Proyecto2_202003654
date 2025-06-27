@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<curso codigo="IPC1">Introducción a la Programación y Computación 1</curso>
+<notas>
+    <actividad nombre="Tarea1" carnet="202003654">90</actividad>
+    <actividad nombre="Tarea1" carnet="202003655">85</actividad>
+    <actividad nombre="Tarea1" carnet="202003656">92</actividad>
+    <actividad nombre="Tarea2" carnet="202003654">88</actividad>
+    <actividad nombre="Tarea2" carnet="202003655">75</actividad>
+    <actividad nombre="Tarea2" carnet="202003656">95</actividad>
+    <actividad nombre="Tarea3" carnet="202003654">95</actividad>
+    <actividad nombre="Tarea3" carnet="202003655">80</actividad>
+    <actividad nombre="Tarea3" carnet="202003656">87</actividad>
+    <actividad nombre="Examen1" carnet="202003654">85</actividad>
+    <actividad nombre="Examen1" carnet="202003655">70</actividad>
+    <actividad nombre="Examen1" carnet="202003656">90</actividad>
+    <actividad nombre="Proyecto" carnet="202003654">92</actividad>
+    <actividad nombre="Proyecto" carnet="202003655">88</actividad>
+    <actividad nombre="Proyecto" carnet="202003656">94</actividad>
+</notas> 

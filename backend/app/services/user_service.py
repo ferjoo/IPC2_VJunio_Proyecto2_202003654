@@ -37,8 +37,8 @@ class UserService:
             # Validar longitud de campos
             if len(data['username']) < 3:
                 raise ValidationError('Username debe tener al menos 3 caracteres')
-            if len(data['password']) < 6:
-                raise ValidationError('Password debe tener al menos 6 caracteres')
+            if len(data['password']) < 4:
+                raise ValidationError('Password debe tener al menos 4 caracteres')
             
             # Crear usuario usando el almacenamiento en matrices
             user = self.user_storage.create_user(data)
@@ -60,8 +60,8 @@ class UserService:
             # Validar datos si se están actualizando
             if 'username' in data and len(data['username']) < 3:
                 raise ValidationError('Username debe tener al menos 3 caracteres')
-            if 'password' in data and len(data['password']) < 6:
-                raise ValidationError('Password debe tener al menos 6 caracteres')
+            if 'password' in data and len(data['password']) < 4:
+                raise ValidationError('Password debe tener al menos 4 caracteres')
             
             # Actualizar usuario
             user = self.user_storage.update_user(user_id, data)

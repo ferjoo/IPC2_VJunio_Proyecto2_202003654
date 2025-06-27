@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Usuarios - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 2rem;
+            color: white;
+        }
+        .sidebar .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-size: 2rem;
+            color: white;
+        }
+        .sidebar .admin-name {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .sidebar .admin-role {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .user-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .user-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .role-tutor {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .role-student {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="admin-name">{{ user.first_name }} {{ user.last_name }}</div>
+            <div class="admin-role">Administrador</div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'main:dashboard' %}">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a class="nav-link active" href="{% url 'main:ver_usuarios' %}">
+                    <i class="fas fa-users me-2"></i>Ver Usuarios
+                </a>
+                <a class="nav-link" href="{% url 'main:mi_informacion' %}">
+                    <i class="fas fa-user me-2"></i>Mi Información
+                </a>
+                <a class="nav-link" href="{% url 'main:logout' %}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><i class="fas fa-users me-2"></i>Gestión de Usuarios</h2>
+                <p class="mb-0">Revisa y gestiona todos los usuarios del sistema</p>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <h4 class="mb-3">
+                    <i class="fas fa-table me-2"></i>Lista de Usuarios
+                </h4>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                <th><i class="fas fa-user me-1"></i>Usuario</th>
+                                <th><i class="fas fa-tag me-1"></i>Rol</th>
+                                <th><i class="fas fa-key me-1"></i>Contraseña</th>
+                                <th><i class="fas fa-eye me-1"></i>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tutor in tutors %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ tutor.user_id }}</span>
+                                </td>
+                                <td>
+                                    <strong>{{ tutor.display_name }}</strong>
+                                </td>
+                                <td>
+                                    <span class="role-badge role-tutor">
+                                        <i class="fas fa-user-graduate me-1"></i>{{ tutor.role }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <code>{{ tutor.password }}</code>
+                                </td>
+                                <td>
+                                    <a href="{% url 'main:usuario_detalle' 'tutor' tutor.user_id %}" class="user-link">
+                                        <i class="fas fa-eye me-1"></i>Ver Detalles
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% for student in students %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ student.student_id }}</span>
+                                </td>
+                                <td>
+                                    <strong>{{ student.display_name }}</strong>
+                                </td>
+                                <td>
+                                    <span class="role-badge role-student">
+                                        <i class="fas fa-user me-1"></i>{{ student.role }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <code>{{ student.password }}</code>
+                                </td>
+                                <td>
+                                    <a href="{% url 'main:usuario_detalle' 'student' student.student_id %}" class="user-link">
+                                        <i class="fas fa-eye me-1"></i>Ver Detalles
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Total: {{ tutors|length }} tutores, {{ students|length }} estudiantes
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

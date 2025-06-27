@@ -193,17 +193,19 @@ class SparseMatrix:
 def create_sparse_matrix_from_data(rows, cols, data_dict):
     """
     Crea una matriz dispersa desde un diccionario de datos.
-    
     Args:
         rows (int): Número de filas
         cols (int): Número de columnas
-        data_dict (dict): Diccionario con claves (fila, col) y valores
-        
+        data_dict (dict): Diccionario con claves (fila, col) o 'fila,col' y valores
     Returns:
         SparseMatrix: Nueva matriz dispersa
     """
     matrix = SparseMatrix(rows, cols)
-    for (row, col), value in data_dict.items():
+    for key, value in data_dict.items():
+        if isinstance(key, str):
+            row, col = map(int, key.split(','))
+        else:
+            row, col = key
         matrix.set_value(row, col, value)
     return matrix
 

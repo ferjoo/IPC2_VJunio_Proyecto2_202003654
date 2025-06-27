@@ -136,6 +136,13 @@ class StudentStorage:
             if student_data and student_data.get('carnet') == carnet:
                 return student_data
         
+        # If hash lookup failed, do a linear search through all students
+        # This handles hash collisions
+        all_students = self.get_all_students()
+        for student in all_students:
+            if student.get('carnet') == carnet:
+                return student
+        
         return None
     
     def get_all_students(self):

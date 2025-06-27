@@ -130,7 +130,7 @@ class AssignmentStorage:
             now = datetime.utcnow()
             assignment_data = {
                 'assignment_id': assignment_id,
-                'tutor_id': tutor_id,
+                'tutor_id': str(tutor_id),  # Store as string for consistency
                 'course_code': course_code,
                 'is_active': True,
                 'created_at': now,
@@ -140,12 +140,17 @@ class AssignmentStorage:
             # Almacenar en matriz
             self._store_tutor_assignment_data(assignment_id, assignment_data)
             
-            # Actualizar índices
+            # Update indices - use a more reliable indexing approach
+            # Store assignment_id in a way that allows multiple assignments per tutor/course
             tutor_hash = hash(str(tutor_id)) % 10000
-            self.tutor_index.set_value(tutor_hash, 0, assignment_id)
+            current_tutor_assignments = self.tutor_index.get_value(tutor_hash, 0)
+            if current_tutor_assignments == 0:
+                self.tutor_index.set_value(tutor_hash, 0, assignment_id)
             
             course_hash = hash(course_code) % 10000
-            self.course_index.set_value(course_hash, 0, assignment_id)
+            current_course_assignments = self.course_index.get_value(course_hash, 0)
+            if current_course_assignments == 0:
+                self.course_index.set_value(course_hash, 0, assignment_id)
             
             return self._get_tutor_assignment_data(assignment_id)
             
@@ -169,7 +174,7 @@ class AssignmentStorage:
             now = datetime.utcnow()
             assignment_data = {
                 'assignment_id': assignment_id,
-                'student_id': student_id,
+                'student_id': str(student_id),  # Store as string for consistency
                 'course_code': course_code,
                 'is_active': True,
                 'created_at': now,
@@ -179,12 +184,17 @@ class AssignmentStorage:
             # Almacenar en matriz
             self._store_student_assignment_data(assignment_id, assignment_data)
             
-            # Actualizar índices
+            # Update indices - use a more reliable indexing approach
+            # Store assignment_id in a way that allows multiple assignments per student/course
             student_hash = hash(str(student_id)) % 10000
-            self.student_index.set_value(student_hash, 0, assignment_id)
+            current_student_assignments = self.student_index.get_value(student_hash, 0)
+            if current_student_assignments == 0:
+                self.student_index.set_value(student_hash, 0, assignment_id)
             
             course_hash = hash(course_code) % 10000
-            self.course_index.set_value(course_hash, 0, assignment_id)
+            current_course_assignments = self.course_index.get_value(course_hash, 0)
+            if current_course_assignments == 0:
+                self.course_index.set_value(course_hash, 0, assignment_id)
             
             return self._get_student_assignment_data(assignment_id)
             
@@ -196,8 +206,11 @@ class AssignmentStorage:
         assignments = []
         for assignment_id in range(1, self.next_tutor_assignment_id):
             assignment_data = self._get_tutor_assignment_data(assignment_id)
-            if assignment_data and assignment_data.get('tutor_id') == str(tutor_id):
-                assignments.append(assignment_data)
+            if assignment_data:
+                # Convert both to integers for comparison
+                stored_tutor_id = int(assignment_data.get('tutor_id', 0))
+                if stored_tutor_id == int(tutor_id):
+                    assignments.append(assignment_data)
         return assignments
     
     def get_student_assignments(self, student_id):
@@ -205,31 +218,33 @@ class AssignmentStorage:
         assignments = []
         for assignment_id in range(1, self.next_student_assignment_id):
             assignment_data = self._get_student_assignment_data(assignment_id)
-            if assignment_data and assignment_data.get('student_id') == str(student_id):
-                assignments.append(assignment_data)
+            if assignment_data:
+                # Convert both to integers for comparison
+                stored_student_id = int(assignment_data.get('student_id', 0))
+                if stored_student_id == int(student_id):
+                    assignments.append(assignment_data)
         return assignments
     
     def get_course_assignments(self, course_code):
         """Obtiene todas las asignaciones de un curso"""
-        tutor_assignments = []
-        student_assignments = []
+        assignments = {
+            'tutor_assignments': [],
+            'student_assignments': []
+        }
         
-        # Buscar asignaciones de tutores
+        # Get tutor assignments for this course
         for assignment_id in range(1, self.next_tutor_assignment_id):
             assignment_data = self._get_tutor_assignment_data(assignment_id)
             if assignment_data and assignment_data.get('course_code') == course_code:
-                tutor_assignments.append(assignment_data)
+                assignments['tutor_assignments'].append(assignment_data)
         
-        # Buscar asignaciones de estudiantes
+        # Get student assignments for this course
         for assignment_id in range(1, self.next_student_assignment_id):
             assignment_data = self._get_student_assignment_data(assignment_id)
             if assignment_data and assignment_data.get('course_code') == course_code:
-                student_assignments.append(assignment_data)
+                assignments['student_assignments'].append(assignment_data)
         
-        return {
-            'tutor_assignments': tutor_assignments,
-            'student_assignments': student_assignments
-        }
+        return assignments
     
     def get_all_tutor_assignments(self):
         """Obtiene todas las asignaciones tutor-curso"""

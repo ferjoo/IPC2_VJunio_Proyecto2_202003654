@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Horarios - Tutor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 2rem;
+            color: white;
+        }
+        .sidebar .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-size: 2rem;
+            color: white;
+        }
+        .sidebar .tutor-name {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .sidebar .tutor-role {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .upload-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="avatar">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="tutor-name">{{ user.first_name }} {{ user.last_name }}</div>
+            <div class="tutor-role">Tutor</div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'main:tutor_dashboard' %}">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a class="nav-link active" href="{% url 'main:tutor_horarios' %}">
+                    <i class="fas fa-clock me-2"></i>Mis Horarios
+                </a>
+                <a class="nav-link" href="{% url 'main:tutor_notas' %}">
+                    <i class="fas fa-graduation-cap me-2"></i>Ingresar Nota
+                </a>
+                <a class="nav-link" href="{% url 'main:logout' %}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><i class="fas fa-clock me-2"></i>Mis Horarios</h2>
+                <p class="mb-0">Gestiona y visualiza tus horarios de tutoría</p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h4 class="mb-3">
+                    <i class="fas fa-upload me-2"></i>Cargar Nuevo Horario
+                </h4>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row align-items-end">
+                        <div class="col-md-6">
+                            <label for="scheduleFile" class="form-label">Archivo XML de Horarios</label>
+                            <input type="file" class="form-control" id="scheduleFile" name="file" accept=".xml" required>
+                            <div class="form-text">Selecciona un archivo XML con el formato de horarios</div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-custom w-100">
+                                <i class="fas fa-upload me-2"></i>Subir Horario
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'main:tutor_horarios' %}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-refresh me-2"></i>Actualizar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+                
+                {% if message %}
+                <div class="alert alert-success mt-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                </div>
+                {% endif %}
+                
+                {% if error %}
+                <div class="alert alert-danger mt-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Schedules Table -->
+            <div class="table-container">
+                <h4 class="mb-3">
+                    <i class="fas fa-table me-2"></i>Horarios Actuales
+                </h4>
+                
+                {% if schedules %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                <th><i class="fas fa-graduation-cap me-1"></i>Curso</th>
+                                <th><i class="fas fa-clock me-1"></i>Horario Inicio</th>
+                                <th><i class="fas fa-clock me-1"></i>Horario Fin</th>
+                                <th><i class="fas fa-calendar me-1"></i>Fecha Creación</th>
+                                <th><i class="fas fa-info-circle me-1"></i>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in schedules %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ schedule.schedule_id }}</span>
+                                </td>
+                                <td>
+                                    <strong>Curso {{ schedule.codigo_curso }}</strong>
+                                </td>
+                                <td>
+                                    <span class="text-primary">{{ schedule.horario_inicio }}</span>
+                                </td>
+                                <td>
+                                    <span class="text-primary">{{ schedule.horario_fin }}</span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ schedule.created_at|date:"d/m/Y H:i" }}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if schedule.is_active %}
+                                    <span class="status-badge status-active">
+                                        <i class="fas fa-check me-1"></i>Activo
+                                    </span>
+                                    {% else %}
+                                    <span class="status-badge bg-secondary">
+                                        <i class="fas fa-pause me-1"></i>Inactivo
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Total de horarios: {{ schedules|length }}
+                    </small>
+                </div>
+                
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    <h5>No hay horarios configurados</h5>
+                    <p class="mb-3">Sube un archivo XML para agregar tus horarios de tutoría</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-custom" onclick="document.getElementById('scheduleFile').click()">
+                            <i class="fas fa-plus me-2"></i>Agregar Primer Horario
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

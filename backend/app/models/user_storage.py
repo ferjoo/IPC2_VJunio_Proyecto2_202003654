@@ -148,6 +148,13 @@ class UserStorage:
             if user_data and user_data.get('username') == username:
                 return user_data
         
+        # If hash lookup failed, do a linear search through all users
+        # This handles hash collisions
+        all_users = self.get_all_users()
+        for user in all_users:
+            if user.get('username') == username:
+                return user
+        
         return None
     
     def get_user_by_email(self, email):

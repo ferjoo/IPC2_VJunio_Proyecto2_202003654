@@ -135,10 +135,8 @@ class ScheduleStorage:
             return []
         
         schedules = []
-        tutor_hash = hash(str(tutor_id)) % 10000
-        schedule_id = self.tutor_index.get_value(tutor_hash, 0)
-        
-        if schedule_id > 0:
+        # Scan through all schedules to find those belonging to this tutor
+        for schedule_id in range(1, self.next_schedule_id):
             schedule_data = self._get_schedule_data(schedule_id)
             if schedule_data and schedule_data.get('tutor_id') == tutor_id:
                 schedules.append(schedule_data)

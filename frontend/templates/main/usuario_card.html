@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Usuario - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: #f8f9fa; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 2rem;
+            color: white;
+        }
+        .sidebar .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-size: 2rem;
+            color: white;
+        }
+        .sidebar .admin-name {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .sidebar .admin-role {
+            text-align: center;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+        .main-content {
+            padding: 2rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .user-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .user-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-size: 3rem;
+            color: white;
+        }
+        .user-info {
+            padding: 2rem;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .info-value {
+            color: #6c757d;
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .back-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="admin-name">{{ user.first_name }} {{ user.last_name }}</div>
+            <div class="admin-role">Administrador</div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{% url 'main:dashboard' %}">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a class="nav-link" href="{% url 'main:ver_usuarios' %}">
+                    <i class="fas fa-users me-2"></i>Ver Usuarios
+                </a>
+                <a class="nav-link" href="{% url 'main:mi_informacion' %}">
+                    <i class="fas fa-user me-2"></i>Mi Información
+                </a>
+                <a class="nav-link" href="{% url 'main:logout' %}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><i class="fas fa-user me-2"></i>Detalle de Usuario</h2>
+                <p class="mb-0">Información detallada del usuario seleccionado</p>
+            </div>
+
+            <!-- User Card -->
+            <div class="user-card">
+                {% if error %}
+                    <div class="user-card-header">
+                        <div class="user-avatar">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Error</h3>
+                    </div>
+                    <div class="user-info">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                        </div>
+                    </div>
+                {% elif user_info %}
+                    <div class="user-card-header">
+                        <div class="user-avatar">
+                            {% if role == 'tutor' %}
+                                <i class="fas fa-user-graduate"></i>
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                        </div>
+                        <h3>{{ user_info.full_name }}</h3>
+                        <p class="mb-0">
+                            {% if role == 'tutor' %}
+                                <i class="fas fa-user-graduate me-1"></i>Tutor
+                            {% else %}
+                                <i class="fas fa-user me-1"></i>Estudiante
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="user-info">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-id-card me-2"></i>
+                                {% if role == 'tutor' %}Registro Personal{% else %}Carnet{% endif %}:
+                            </span>
+                            <span class="info-value">{{ user_info.registro_personal }}</span>
+                        </div>
+                        
+                        {% if role == 'tutor' and user_info.email %}
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-envelope me-2"></i>Email:
+                            </span>
+                            <span class="info-value">{{ user_info.email }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-toggle-on me-2"></i>Estado:
+                            </span>
+                            <span class="info-value">
+                                {% if user_info.is_active %}
+                                    <span class="status-badge status-active">
+                                        <i class="fas fa-check me-1"></i>Activo
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-inactive">
+                                        <i class="fas fa-times me-1"></i>Inactivo
+                                    </span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-shield-alt me-2"></i>Administrador:
+                            </span>
+                            <span class="info-value">
+                                {% if user_info.is_admin %}
+                                    <span class="status-badge status-active">
+                                        <i class="fas fa-check me-1"></i>Sí
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-inactive">
+                                        <i class="fas fa-times me-1"></i>No
+                                    </span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="user-card-header">
+                        <div class="user-avatar">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h3>Usuario No Encontrado</h3>
+                    </div>
+                    <div class="user-info">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No se encontró información del usuario.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="{% url 'main:ver_usuarios' %}" class="back-button">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
